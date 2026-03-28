@@ -56,12 +56,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MesaId,NumeroMesa,Capacidad")] Mesa mesa)
         {
-            if (ModelState.IsValid)
-            {
+          
                 _context.Add(mesa);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(mesa);
         }
 
@@ -93,8 +92,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _context.Update(mesa);
@@ -112,7 +110,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(mesa);
         }
 

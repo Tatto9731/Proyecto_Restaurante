@@ -56,12 +56,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoriaId,Nombre")] Categoria categoria)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(categoria);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(categoria);
         }
 
@@ -93,8 +92,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _context.Update(categoria);
@@ -112,7 +110,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(categoria);
         }
 

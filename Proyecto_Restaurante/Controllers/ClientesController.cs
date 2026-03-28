@@ -56,12 +56,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClienteId,Nombre,Identificacion,CorreoElectronico,Telefono")] Cliente cliente)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(cliente);
         }
 
@@ -93,8 +92,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _context.Update(cliente);
@@ -112,7 +110,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             return View(cliente);
         }
 

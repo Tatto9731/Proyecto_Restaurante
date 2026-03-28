@@ -59,12 +59,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FacturaId,OrdenId,Total,Impuestos,MetodoPago,NumeroFactura")] Factura factura)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(factura);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
             return View(factura);
         }
@@ -98,8 +97,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+          
                 try
                 {
                     _context.Update(factura);
@@ -117,7 +115,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
             return View(factura);
         }

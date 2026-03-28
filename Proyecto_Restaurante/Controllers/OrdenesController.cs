@@ -61,12 +61,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrdenId,MesaId,SaloneroId,Fecha")] Orden orden)
         {
-            if (ModelState.IsValid)
-            {
+            
                 _context.Add(orden);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", orden.MesaId);
             ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId", orden.SaloneroId);
             return View(orden);
@@ -102,8 +101,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     _context.Update(orden);
@@ -121,7 +119,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", orden.MesaId);
             ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId", orden.SaloneroId);
             return View(orden);

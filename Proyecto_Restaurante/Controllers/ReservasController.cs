@@ -61,12 +61,11 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReservaId,ClienteId,MesaId,Fecha,CantidadPersonas,Estado")] Reserva reserva)
         {
-            if (ModelState.IsValid)
-            {
+           
                 _context.Add(reserva);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
             return View(reserva);
@@ -102,8 +101,7 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _context.Update(reserva);
@@ -121,7 +119,7 @@ namespace Proyecto_Restaurante.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
             return View(reserva);
