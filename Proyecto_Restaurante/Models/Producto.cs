@@ -13,7 +13,7 @@ public partial class Producto
 
     public int? CategoriaId { get; set; }
 
-    public virtual Categorium? Categoria { get; set; }
+    public virtual Categoria? Categoria { get; set; }
 
     public virtual ICollection<ProductoOrden> ProductoOrdens { get; set; } = new List<ProductoOrden>();
 }
