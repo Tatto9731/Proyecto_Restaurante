@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Proyecto_Restaurante.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register DbContext with connection string
+builder.Services.AddDbContext<RestauranteDalyContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DBContextTony")));
 
 var app = builder.Build();
 
