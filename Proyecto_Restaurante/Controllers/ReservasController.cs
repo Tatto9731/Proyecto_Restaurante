@@ -61,14 +61,71 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReservaId,ClienteId,MesaId,Fecha,CantidadPersonas,Estado")] Reserva reserva)
         {
-           
+            if (reserva.Fecha == null)
+            {
+                ModelState.AddModelError("Fecha", "La fecha de la reserva es obligatoria.");
+            }
+            else if (reserva.Fecha.Value < DateTime.Now)
+            {
+                ModelState.AddModelError("Fecha", "No se puede reservar en una fecha pasada.");
+            }
+
+            if (reserva.MesaId == null)
+            {
+                ModelState.AddModelError("MesaId", "Debe seleccionar una mesa.");
+            }
+
+            if (reserva.CantidadPersonas == null || reserva.CantidadPersonas <= 0)
+            {
+                ModelState.AddModelError("CantidadPersonas", "La cantidad de personas debe ser mayor que cero.");
+            }
+
+            if (reserva.MesaId != null && reserva.CantidadPersonas != null && reserva.CantidadPersonas > 0)
+            {
+                var mesa = await _context.Mesas.FindAsync(reserva.MesaId);
+
+                if (mesa == null)
+                {
+                    ModelState.AddModelError("MesaId", "La mesa seleccionada no existe.");
+                }
+                else if (mesa.Capacidad != null && reserva.CantidadPersonas > mesa.Capacidad)
+                {
+                    ModelState.AddModelError("CantidadPersonas",
+                        $"La mesa seleccionada tiene capacidad para {mesa.Capacidad} personas.");
+                }
+            }
+
+            if (reserva.MesaId != null && reserva.Fecha != null)
+            {
+                bool reservaDuplicada = await _context.Reservas
+                    .AnyAsync(r => r.MesaId == reserva.MesaId && r.Fecha == reserva.Fecha);
+
+                if (reservaDuplicada)
+                {
+                    ModelState.AddModelError("", "Ya existe una reserva para esa mesa en la misma fecha y hora.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                return View(reserva);
+            }
+
+            try
+            {
                 _context.Add(reserva);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
-            return View(reserva);
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al guardar la reserva.");
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                return View(reserva);
+            }
         }
 
         // GET: Reservas/Edit/5
@@ -101,28 +158,83 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            
-                try
+            if (reserva.Fecha == null)
+            {
+                ModelState.AddModelError("Fecha", "La fecha de la reserva es obligatoria.");
+            }
+            else if (reserva.Fecha.Value < DateTime.Now)
+            {
+                ModelState.AddModelError("Fecha", "No se puede reservar en una fecha pasada.");
+            }
+
+            if (reserva.MesaId == null)
+            {
+                ModelState.AddModelError("MesaId", "Debe seleccionar una mesa.");
+            }
+
+            if (reserva.CantidadPersonas == null || reserva.CantidadPersonas <= 0)
+            {
+                ModelState.AddModelError("CantidadPersonas", "La cantidad de personas debe ser mayor que cero.");
+            }
+
+            if (reserva.MesaId != null && reserva.CantidadPersonas != null && reserva.CantidadPersonas > 0)
+            {
+                var mesa = await _context.Mesas.FindAsync(reserva.MesaId);
+
+                if (mesa == null)
                 {
-                    _context.Update(reserva);
-                    await _context.SaveChangesAsync();
+                    ModelState.AddModelError("MesaId", "La mesa seleccionada no existe.");
                 }
-                catch (DbUpdateConcurrencyException)
+                else if (mesa.Capacidad != null && reserva.CantidadPersonas > mesa.Capacidad)
                 {
-                    if (!ReservaExists(reserva.ReservaId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("CantidadPersonas",
+                        $"La mesa seleccionada tiene capacidad para {mesa.Capacidad} personas.");
                 }
-                return RedirectToAction(nameof(Index));
-            
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
-            return View(reserva);
+            }
+
+            if (reserva.MesaId != null && reserva.Fecha != null)
+            {
+                bool reservaDuplicada = await _context.Reservas
+                    .AnyAsync(r => r.MesaId == reserva.MesaId
+                                && r.Fecha == reserva.Fecha
+                                && r.ReservaId != reserva.ReservaId);
+
+                if (reservaDuplicada)
+                {
+                    ModelState.AddModelError("", "Ya existe una reserva para esa mesa en la misma fecha y hora.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                return View(reserva);
+            }
+
+            try
+            {
+                _context.Update(reserva);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReservaExists(reserva.ReservaId))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al actualizar la reserva.");
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                return View(reserva);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Reservas/Delete/5

@@ -56,12 +56,38 @@ namespace Proyecto_Restaurante.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ClienteId,Nombre,Identificacion,CorreoElectronico,Telefono")] Cliente cliente)
         {
-            
+            if (string.IsNullOrWhiteSpace(cliente.Identificacion))
+            {
+                ModelState.AddModelError("Identificacion", "La identificación es obligatoria.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.Identificacion))
+            {
+                bool identificacionExiste = await _context.Clientes
+                    .AnyAsync(c => c.Identificacion == cliente.Identificacion);
+
+                if (identificacionExiste)
+                {
+                    ModelState.AddModelError("Identificacion", "La identificación ya está registrada.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(cliente);
+            }
+
+            try
+            {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
-            return View(cliente);
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al guardar el cliente.");
+                return View(cliente);
+            }
         }
 
         // GET: Clientes/Edit/5
@@ -92,26 +118,48 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            
-                try
+            if (string.IsNullOrWhiteSpace(cliente.Identificacion))
+            {
+                ModelState.AddModelError("Identificacion", "La identificación es obligatoria.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.Identificacion))
+            {
+                bool identificacionExiste = await _context.Clientes
+                    .AnyAsync(c => c.Identificacion == cliente.Identificacion && c.ClienteId != cliente.ClienteId);
+
+                if (identificacionExiste)
                 {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
+                    ModelState.AddModelError("Identificacion", "La identificación ya está registrada.");
                 }
-                catch (DbUpdateConcurrencyException)
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(cliente);
+            }
+
+            try
+            {
+                _context.Update(cliente);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClienteExists(cliente.ClienteId))
                 {
-                    if (!ClienteExists(cliente.ClienteId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
-            
-            return View(cliente);
+
+                throw;
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al actualizar el cliente.");
+                return View(cliente);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Clientes/Delete/5

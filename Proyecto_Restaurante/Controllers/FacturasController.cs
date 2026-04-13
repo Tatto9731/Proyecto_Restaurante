@@ -57,15 +57,54 @@ namespace Proyecto_Restaurante.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FacturaId,OrdenId,Total,Impuestos,MetodoPago,NumeroFactura")] Factura factura)
+        public async Task<IActionResult> Create([Bind("FacturaId,OrdenId,Subtotal,Total,Impuestos,MetodoPago,NumeroFactura")] Factura factura)
         {
-            
+            if (factura.Subtotal == null || factura.Subtotal < 0)
+            {
+                ModelState.AddModelError("Subtotal", "El subtotal es obligatorio y no puede ser negativo.");
+            }
+
+            if (factura.Impuestos == null || factura.Impuestos < 0)
+            {
+                ModelState.AddModelError("Impuestos", "Los impuestos son obligatorios y no pueden ser negativos.");
+            }
+
+            if (string.IsNullOrWhiteSpace(factura.NumeroFactura))
+            {
+                factura.NumeroFactura = $"FAC-{DateTime.Now:yyyyMMddHHmmss}";
+            }
+
+            bool numeroFacturaExiste = await _context.Facturas
+                .AnyAsync(f => f.NumeroFactura == factura.NumeroFactura);
+
+            if (numeroFacturaExiste)
+            {
+                ModelState.AddModelError("NumeroFactura", "El número de factura ya existe.");
+            }
+
+            if (factura.Subtotal != null && factura.Impuestos != null)
+            {
+                factura.Total = factura.Subtotal.Value + factura.Impuestos.Value;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
+                return View(factura);
+            }
+
+            try
+            {
                 _context.Add(factura);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
-            ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
-            return View(factura);
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al guardar la factura.");
+                ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
+                return View(factura);
+            }
         }
 
         // GET: Facturas/Edit/5
@@ -90,34 +129,69 @@ namespace Proyecto_Restaurante.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FacturaId,OrdenId,Total,Impuestos,MetodoPago,NumeroFactura")] Factura factura)
+        public async Task<IActionResult> Edit(int id, [Bind("FacturaId,OrdenId,Subtotal,Total,Impuestos,MetodoPago,NumeroFactura")] Factura factura)
         {
             if (id != factura.FacturaId)
             {
                 return NotFound();
             }
 
-          
-                try
+            if (factura.Subtotal == null || factura.Subtotal < 0)
+            {
+                ModelState.AddModelError("Subtotal", "El subtotal es obligatorio y no puede ser negativo.");
+            }
+
+            if (factura.Impuestos == null || factura.Impuestos < 0)
+            {
+                ModelState.AddModelError("Impuestos", "Los impuestos son obligatorios y no pueden ser negativos.");
+            }
+
+            if (string.IsNullOrWhiteSpace(factura.NumeroFactura))
+            {
+                factura.NumeroFactura = $"FAC-{DateTime.Now:yyyyMMddHHmmss}";
+            }
+
+            bool numeroFacturaExiste = await _context.Facturas
+                .AnyAsync(f => f.NumeroFactura == factura.NumeroFactura && f.FacturaId != factura.FacturaId);
+
+            if (numeroFacturaExiste)
+            {
+                ModelState.AddModelError("NumeroFactura", "El número de factura ya existe.");
+            }
+
+            if (factura.Subtotal != null && factura.Impuestos != null)
+            {
+                factura.Total = factura.Subtotal.Value + factura.Impuestos.Value;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
+                return View(factura);
+            }
+
+            try
+            {
+                _context.Update(factura);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FacturaExists(factura.FacturaId))
                 {
-                    _context.Update(factura);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FacturaExists(factura.FacturaId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            
-            ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
-            return View(factura);
+
+                throw;
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Ocurrió un error al actualizar la factura.");
+                ViewData["OrdenId"] = new SelectList(_context.Ordens, "OrdenId", "OrdenId", factura.OrdenId);
+                return View(factura);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Facturas/Delete/5

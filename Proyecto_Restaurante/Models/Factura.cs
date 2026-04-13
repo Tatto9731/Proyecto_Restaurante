@@ -8,6 +8,7 @@ public partial class Factura
     public int FacturaId { get; set; }
 
     public int? OrdenId { get; set; }
+    public decimal? Subtotal { get; set; }
 
     public decimal? Total { get; set; }
 
