@@ -3,73 +3,159 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProyectoDADSDSDa_Restaurante</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Restaurante Gourmet</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Proyecto_Restaurante.styles.css" asp-append-version="true" />
+    
+    <style>
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #f8f9fa;
+            }
+
+            /* NAVBAR */
+            .navbar {
+                background: linear-gradient(90deg, #1c1c1c, #343a40);
+            }
+
+            .navbar-brand {
+                font-weight: 600;
+                color: #f8d210 !important;
+                font-size: 1.4rem;
+            }
+
+            .nav-link {
+                color: #ffffff !important;
+                margin-right: 10px;
+                transition: 0.3s;
+            }
+
+            .nav-link:hover {
+                color: #f8d210 !important;
+                transform: scale(1.05);
+            }
+
+            /* BOTÓN DESTACADO */
+            .btn-gold {
+                background-color: #f8d210;
+                color: #000;
+                border-radius: 25px;
+                padding: 5px 15px;
+                font-weight: 500;
+            }
+
+            .btn-gold:hover {
+                background-color: #e5c100;
+            }
+
+            /* CONTENIDO */
+            .container {
+                margin-top: 30px;
+            }
+
+            main {
+                background: white;
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+            }
+
+            /* FOOTER */
+            footer {
+                background-color: #1c1c1c;
+                color: #aaa;
+                padding: 15px 0;
+                text-align: center;
+                margin-top: 40px;
+            }
+
+            footer a {
+                color: #f8d210;
+                text-decoration: none;
+            }
+
+            footer a:hover {
+                text-decoration: underline;
+            }
+    </style>
 </head>
+
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Proyecto_Restaurante</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    🍽️ Restaurante Gourmet
+                </a>
+
+                <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categorias" asp-action="Index">Categorias</a>
+                            <a class="nav-link" asp-controller="Categorias" asp-action="Index">Categorías</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Privacy</a>
+                            <a class="nav-link" asp-controller="Productos" asp-action="Index">Menú</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Facturas" asp-action="Index">Privacy</a>
+                            <a class="nav-link" asp-controller="Ordenes" asp-action="Index">Órdenes</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Mesas" asp-action="Index">Privacy</a>
+                            <a class="nav-link" asp-controller="Mesas" asp-action="Index">Mesas</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ordenes" asp-action="Index">Privacy</a>
+                            <a class="nav-link" asp-controller="Facturas" asp-action="Index">Facturación</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ProductosOrdenes" asp-action="Index">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservas" asp-action="Index">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Saloneros" asp-action="Index">Privacy</a>
+                            <a class="nav-link" asp-controller="Clientes" asp-action="Index">Clientes</a>
                         </li>
 
                     </ul>
+
+                    <!-- BOTÓN -->
+                    <a class="btn btn-gold" asp-controller="Ordenes" asp-action="Create">
+                        Nueva Orden
+                    </a>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer>
         <div class="container">
-            &copy; 2026 - Proyecto_Restaurante - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <p>&copy; 2026 - Restaurante Gourmet | Sistema de Gestión</p>
+            <p>
+                <a asp-controller="Home" asp-action="Privacy">Política de Privacidad</a>
+            </p>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
