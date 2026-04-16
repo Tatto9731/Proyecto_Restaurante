@@ -6,23 +6,18 @@
 
 <div class="card shadow">
     <div class="card-header bg-info text-white">
-        <h4 class="mb-0">🧾 Detalle de Factura</h4>
+        <h4 class="mb-0">📄 Detalle de Factura</h4>
     </div>
 
     <div class="card-body">
 
-        <h5 class="mb-3">Factura #: @Model.NumeroFactura</h5>
-
-        <p><strong>Orden:</strong> #@Model.Orden?.OrdenId</p>
+        <p><strong>Total:</strong> @Model.Total</p>
+        <p><strong>Impuestos:</strong> @Model.Impuestos</p>
         <p><strong>Método de Pago:</strong> @Model.MetodoPago</p>
+        <p><strong>Número de Factura:</strong> @Model.NumeroFactura</p>
+        <p><strong>Orden:</strong> @Model.Orden?.OrdenId</p>
 
-        <hr />
-
-        <p><strong>Subtotal:</strong> ₡ @Model.Subtotal.ToString("N2")</p>
-        <p><strong>Impuestos:</strong> ₡ @Model.Impuestos.ToString("N2")</p>
-        <p class="fs-5"><strong>Total:</strong> ₡ @Model.Total.ToString("N2")</p>
-
-        <div class="d-flex justify-content-between mt-3">
+        <div class="d-flex justify-content-between">
             <a asp-action="Index" class="btn btn-secondary">← Volver</a>
             <a asp-action="Edit" asp-route-id="@Model.FacturaId" class="btn btn-warning">Editar</a>
         </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Restaurante Gourmet</title>
 
-    <!-- Google Fonts -->
+   
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -16,7 +16,7 @@
                 background-color: #f8f9fa;
             }
 
-            /* NAVBAR */
+       
             .navbar {
                 background: linear-gradient(90deg, #1c1c1c, #343a40);
             }
@@ -38,7 +38,7 @@
                 transform: scale(1.05);
             }
 
-            /* BOTÓN DESTACADO */
+         
             .btn-gold {
                 background-color: #f8d210;
                 color: #000;
@@ -51,7 +51,7 @@
                 background-color: #e5c100;
             }
 
-            /* CONTENIDO */
+        
             .container {
                 margin-top: 30px;
             }
@@ -63,7 +63,7 @@
                 box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
             }
 
-            /* FOOTER */
+         
             footer {
                 background-color: #1c1c1c;
                 color: #aaa;
@@ -118,6 +118,15 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Mesas" asp-action="Index">Mesas</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ProductosOrdenes" asp-action="Index">Mesas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Reservas" asp-action="Index">Reservas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Saloneros" asp-action="Index">Saloneros</a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Facturas" asp-action="Index">Facturación</a>
@@ -129,7 +138,7 @@
 
                     </ul>
 
-                    <!-- BOTÓN -->
+                  
                     <a class="btn btn-gold" asp-controller="Ordenes" asp-action="Create">
                         Nueva Orden
                     </a>

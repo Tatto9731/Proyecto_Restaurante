@@ -11,12 +11,13 @@
 
     <div class="card-body">
 
-        <p>¿Seguro que deseas eliminar la factura:</p>
-
-        <h5 class="text-danger">#@Model.NumeroFactura</h5>
+        <p>
+            ¿Seguro que deseas eliminar la factura:
+            <strong class="text-danger">@Model.NumeroFactura</strong>?
+        </p>
 
         <ul>
-            <li><strong>Total:</strong> ₡ @Model.Total.ToString("N2")</li>
+            <li><strong>Total:</strong> @Model.Total</li>
             <li><strong>Método:</strong> @Model.MetodoPago</li>
         </ul>
 

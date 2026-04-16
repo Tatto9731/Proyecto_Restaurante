@@ -1,44 +1,47 @@
 ﻿@model Proyecto_Restaurante.Models.Orden
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Orden";
 }
 
-<h1>Edit</h1>
+<div class="card shadow">
+    <div class="card-header bg-warning">
+        <h4 class="mb-0">✏️ Editar Orden</h4>
+    </div>
 
-<h4>Orden</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="card-body">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="OrdenId" />
-            <div class="form-group">
-                <label asp-for="MesaId" class="control-label"></label>
-                <select asp-for="MesaId" class="form-control" asp-items="ViewBag.MesaId"></select>
-                <span asp-validation-for="MesaId" class="text-danger"></span>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="MesaId" class="form-label fw-semibold"></label>
+                <select asp-for="MesaId" class="form-select" asp-items="ViewBag.MesaId"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="SaloneroId" class="control-label"></label>
-                <select asp-for="SaloneroId" class="form-control" asp-items="ViewBag.SaloneroId"></select>
-                <span asp-validation-for="SaloneroId" class="text-danger"></span>
+
+            <div class="mb-3">
+                <label asp-for="SaloneroId" class="form-label fw-semibold"></label>
+                <select asp-for="SaloneroId" class="form-select" asp-items="ViewBag.SaloneroId"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Fecha" class="form-label fw-semibold"></label>
                 <input asp-for="Fecha" class="form-control" />
-                <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+                <button type="submit" class="btn btn-gold">Guardar Cambios</button>
             </div>
+
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

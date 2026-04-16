@@ -1,39 +1,23 @@
 ﻿@model Proyecto_Restaurante.Models.Mesa
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Detalle Mesa";
 }
 
-<h1>Edit</h1>
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">📄 Detalle de Mesa</h4>
+    </div>
 
-<h4>Mesa</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MesaId" />
-            <div class="form-group">
-                <label asp-for="NumeroMesa" class="control-label"></label>
-                <input asp-for="NumeroMesa" class="form-control" />
-                <span asp-validation-for="NumeroMesa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Capacidad" class="control-label"></label>
-                <input asp-for="Capacidad" class="form-control" />
-                <span asp-validation-for="Capacidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card-body">
+
+        <p><strong>Número de Mesa:</strong> @Model.NumeroMesa</p>
+        <p><strong>Capacidad:</strong> @Model.Capacidad personas</p>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.MesaId" class="btn btn-warning">Editar</a>
+        </div>
+
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
