@@ -1,8 +1,141 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- BIENVENIDA -->
+<div class="p-4 mb-4 bg-dark text-white rounded-3 shadow">
+    <div class="container-fluid">
+        <h2 class="fw-bold">Panel de Control</h2>
+        <p class="mb-0">Gestión diaria del restaurante</p>
+    </div>
 </div>
+
+<!-- ACCIONES PRINCIPALES -->
+<div class="row mb-4">
+
+    <div class="col-md-4 mb-3">
+        <a asp-controller="Ordenes" asp-action="Create" class="text-decoration-none">
+            <div class="card shadow h-100 border-0 hover-card">
+                <div class="card-body text-center">
+                    <h3>🧾</h3>
+                    <h5>Nueva Orden</h5>
+                    <p class="text-muted">Registrar pedido del cliente</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a asp-controller="Reservas" asp-action="Create" class="text-decoration-none">
+            <div class="card shadow h-100 border-0 hover-card">
+                <div class="card-body text-center">
+                    <h3>📅</h3>
+                    <h5>Nueva Reserva</h5>
+                    <p class="text-muted">Registrar reservación</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a asp-controller="Facturas" asp-action="Create" class="text-decoration-none">
+            <div class="card shadow h-100 border-0 hover-card">
+                <div class="card-body text-center">
+                    <h3>💳</h3>
+                    <h5>Generar Factura</h5>
+                    <p class="text-muted">Procesar pago del cliente</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- ACCESOS RÁPIDOS -->
+<div class="row mb-4">
+
+    <div class="col-md-3 mb-3">
+        <a asp-controller="Clientes" asp-action="Index" class="text-decoration-none">
+            <div class="card shadow-sm h-100 hover-card">
+                <div class="card-body text-center">
+                    <h5>👤 Clientes</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a asp-controller="Mesas" asp-action="Index" class="text-decoration-none">
+            <div class="card shadow-sm h-100 hover-card">
+                <div class="card-body text-center">
+                    <h5>🪑 Mesas</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a asp-controller="Productos" asp-action="Index" class="text-decoration-none">
+            <div class="card shadow-sm h-100 hover-card">
+                <div class="card-body text-center">
+                    <h5>🍽️ Menú</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <a asp-controller="Categorias" asp-action="Index" class="text-decoration-none">
+            <div class="card shadow-sm h-100 hover-card">
+                <div class="card-body text-center">
+                    <h5>📂 Categorías</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- OPERACIÓN DEL DÍA -->
+<div class="row">
+
+    <!-- ÓRDENES -->
+    <div class="col-md-6 mb-3">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                Órdenes recientes
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Aquí se mostrarán las últimas órdenes registradas.</p>
+                <!-- Aquí luego puedes poner tabla dinámica -->
+            </div>
+        </div>
+    </div>
+
+    <!-- RESERVAS -->
+    <div class="col-md-6 mb-3">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                Reservas del día
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Aquí se mostrarán las reservas programadas.</p>
+                <!-- Aquí luego puedes poner tabla dinámica -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ESTILOS EXTRA -->
+<style>
+    .hover-card {
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+        }
+</style>
