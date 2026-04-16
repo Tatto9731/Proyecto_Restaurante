@@ -1,48 +1,31 @@
 ﻿@model Proyecto_Restaurante.Models.Factura
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Factura";
 }
 
-<h1>Details</h1>
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">🧾 Detalle de Factura</h4>
+    </div>
 
-<div>
-    <h4>Factura</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Total)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Total)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Impuestos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Impuestos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MetodoPago)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MetodoPago)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroFactura)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumeroFactura)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Orden)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Orden.OrdenId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.FacturaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card-body">
+
+        <h5 class="mb-3">Factura #: @Model.NumeroFactura</h5>
+
+        <p><strong>Orden:</strong> #@Model.Orden?.OrdenId</p>
+        <p><strong>Método de Pago:</strong> @Model.MetodoPago</p>
+
+        <hr />
+
+        <p><strong>Subtotal:</strong> ₡ @Model.Subtotal.ToString("N2")</p>
+        <p><strong>Impuestos:</strong> ₡ @Model.Impuestos.ToString("N2")</p>
+        <p class="fs-5"><strong>Total:</strong> ₡ @Model.Total.ToString("N2")</p>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.FacturaId" class="btn btn-warning">Editar</a>
+        </div>
+
+    </div>
 </div>
