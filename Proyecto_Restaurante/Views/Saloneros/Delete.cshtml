@@ -4,26 +4,28 @@
     ViewData["Title"] = "Eliminar Salonero";
 }
 
-<div class="container">
-    <h2 class="text-danger mb-3">Eliminar Salonero</h2>
-
-    <div class="alert alert-warning">
-        ¿Seguro que deseas eliminar este registro?
+<div class="card shadow border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">⚠️ Eliminar Salonero</h4>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Nombre</dt>
-                <dd class="col-sm-9">@Model.Nombre</dd>
-            </dl>
+    <div class="card-body">
 
-            <form asp-action="Delete">
-                <input type="hidden" asp-for="SaloneroId" />
+        <p>¿Seguro que deseas eliminar este salonero?</p>
 
-                <button type="submit" class="btn btn-danger">Eliminar</button>
+        <ul>
+            <li><strong>Nombre:</strong> @Model.Nombre</li>
+        </ul>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="SaloneroId" />
+
+            <div class="d-flex justify-content-between">
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-            </form>
-        </div>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+
+        </form>
+
     </div>
 </div>

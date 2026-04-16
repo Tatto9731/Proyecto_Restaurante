@@ -1,21 +1,22 @@
 ﻿@model Proyecto_Restaurante.Models.Salonero
 
 @{
-    ViewData["Title"] = "Detalles Salonero";
+    ViewData["Title"] = "Detalle Salonero";
 }
 
-<div class="container">
-    <h2 class="mb-3">Detalles del Salonero</h2>
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">📄 Detalle de Salonero</h4>
+    </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Nombre</dt>
-                <dd class="col-sm-9">@Model.Nombre</dd>
-            </dl>
+    <div class="card-body">
 
-            <a asp-action="Edit" asp-route-id="@Model?.SaloneroId" class="btn btn-primary">Editar</a>
-            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        <p><strong>Nombre:</strong> @Model.Nombre</p>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.SaloneroId" class="btn btn-warning">Editar</a>
         </div>
+
     </div>
 </div>
