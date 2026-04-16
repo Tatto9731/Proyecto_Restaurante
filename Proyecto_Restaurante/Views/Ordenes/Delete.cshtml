@@ -1,39 +1,33 @@
 ﻿@model Proyecto_Restaurante.Models.Orden
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Orden";
 }
 
-<h1>Delete</h1>
+<div class="card shadow border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">⚠️ Eliminar Orden</h4>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Orden</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Mesa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Mesa.MesaId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Salonero)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Salonero.SaloneroId)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="OrdenId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="card-body">
+
+        <p>¿Seguro que deseas eliminar esta orden?</p>
+
+        <ul>
+            <li><strong>Fecha:</strong> @Model.Fecha</li>
+            <li><strong>Mesa:</strong> @Model.Mesa?.MesaId</li>
+            <li><strong>Salonero:</strong> @Model.Salonero?.SaloneroId</li>
+        </ul>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="OrdenId" />
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+
+        </form>
+
+    </div>
 </div>

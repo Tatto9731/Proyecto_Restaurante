@@ -1,42 +1,25 @@
 ﻿@model Proyecto_Restaurante.Models.ProductoOrden
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Producto en Orden";
 }
 
-<h1>Details</h1>
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">📄 Detalle Producto en Orden</h4>
+    </div>
 
-<div>
-    <h4>ProductoOrden</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cantidad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cantidad)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Precio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Orden)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Orden.OrdenId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Producto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Producto.ProductoId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProductoOrdenId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card-body">
+
+        <p><strong>Cantidad:</strong> @Model.Cantidad</p>
+        <p><strong>Precio:</strong> ₡ @Model.Precio</p>
+        <p><strong>Orden:</strong> @Model.Orden?.OrdenId</p>
+        <p><strong>Producto:</strong> @Model.Producto?.ProductoId</p>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.ProductoOrdenId" class="btn btn-warning">Editar</a>
+        </div>
+
+    </div>
 </div>

@@ -1,48 +1,26 @@
 ﻿@model Proyecto_Restaurante.Models.Reserva
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle Reserva";
 }
 
-<h1>Details</h1>
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">📄 Detalle de Reserva</h4>
+    </div>
 
-<div>
-    <h4>Reserva</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CantidadPersonas)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CantidadPersonas)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cliente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cliente.ClienteId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Mesa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Mesa.MesaId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ReservaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card-body">
+
+        <p><strong>Fecha:</strong> @Model.Fecha</p>
+        <p><strong>Personas:</strong> @Model.CantidadPersonas</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+        <p><strong>Cliente:</strong> @Model.Cliente?.ClienteId</p>
+        <p><strong>Mesa:</strong> @Model.Mesa?.MesaId</p>
+
+        <div class="d-flex justify-content-between mt-3">
+            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.ReservaId" class="btn btn-warning">Editar</a>
+        </div>
+
+    </div>
 </div>

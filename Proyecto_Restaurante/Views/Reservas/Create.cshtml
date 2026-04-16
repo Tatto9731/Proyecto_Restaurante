@@ -1,51 +1,62 @@
 ﻿@model Proyecto_Restaurante.Models.Reserva
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nueva Reserva";
 }
 
-<h1>Create</h1>
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">📅 Crear Reserva</h4>
+    </div>
 
-<h4>Reserva</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="card-body">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ClienteId" class="control-label"></label>
-                <select asp-for="ClienteId" class ="form-control" asp-items="ViewBag.ClienteId"></select>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="ClienteId" class="form-label fw-semibold"></label>
+                <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId">
+                    <option value="">-- Seleccione cliente --</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="MesaId" class="control-label"></label>
-                <select asp-for="MesaId" class ="form-control" asp-items="ViewBag.MesaId"></select>
+
+            <div class="mb-3">
+                <label asp-for="MesaId" class="form-label fw-semibold"></label>
+                <select asp-for="MesaId" class="form-select" asp-items="ViewBag.MesaId">
+                    <option value="">-- Seleccione mesa --</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="Fecha" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="Fecha" class="form-label fw-semibold"></label>
                 <input asp-for="Fecha" class="form-control" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CantidadPersonas" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="CantidadPersonas" class="form-label fw-semibold"></label>
                 <input asp-for="CantidadPersonas" class="form-control" />
                 <span asp-validation-for="CantidadPersonas" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
+
+            <div class="mb-3">
+                <label asp-for="Estado" class="form-label fw-semibold"></label>
+                <input asp-for="Estado" class="form-control" placeholder="Pendiente / Confirmada / Cancelada" />
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+                <button type="submit" class="btn btn-gold">Guardar</button>
             </div>
+
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
