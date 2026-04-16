@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 // Register DbContext with connection string
 builder.Services.AddDbContext<RestauranteDalyContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DBContextTony")));
+        builder.Configuration.GetConnectionString("DBContext")));
 
 var app = builder.Build();
 
