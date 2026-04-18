@@ -42,7 +42,9 @@
 
             <div class="mb-3">
                 <label asp-for="Estado" class="form-label fw-semibold"></label>
-                <input asp-for="Estado" class="form-control" placeholder="Pendiente / Confirmada / Cancelada" />
+                <select asp-for="Estado" class="form-select" asp-items="ViewBag.Estado">
+                    <option value="">-- Seleccione estado --</option>
+                </select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
 

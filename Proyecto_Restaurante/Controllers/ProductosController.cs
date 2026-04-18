@@ -48,7 +48,7 @@ namespace Proyecto_Restaurante.Controllers
         // GET: Productos/Create
         public IActionResult Create()
         {
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId");
+            ViewBag.CategoriaId = new SelectList(_context.Categoria, "CategoriaId", "Nombre");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace Proyecto_Restaurante.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId", producto.CategoriaId);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
@@ -81,7 +81,7 @@ namespace Proyecto_Restaurante.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId", producto.CategoriaId);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
@@ -116,7 +116,7 @@ namespace Proyecto_Restaurante.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             
-            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "CategoriaId", producto.CategoriaId);
+            ViewData["CategoriaId"] = new SelectList(_context.Categoria, "CategoriaId", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 

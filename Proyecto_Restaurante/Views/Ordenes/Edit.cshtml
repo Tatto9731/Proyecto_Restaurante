@@ -1,7 +1,16 @@
-﻿@model Proyecto_Restaurante.Models.Orden
+﻿@model Proyecto_Restaurante.Models.ViewModels.OrdenEditViewModel
+@using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Linq
 
 @{
     ViewData["Title"] = "Editar Orden";
+    var productosSelect = ViewBag.Productos as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var productosJson = JsonSerializer.Serialize(productosSelect.Select(p => new
+    {
+        id = p.Value,
+        nombre = p.Text
+    }));
 }
 
 <div class="card shadow">
@@ -10,32 +19,99 @@
     </div>
 
     <div class="card-body">
-        <form asp-action="Edit">
-
+        <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="OrdenId" />
 
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label asp-for="MesaId" class="form-label fw-semibold"></label>
-                <select asp-for="MesaId" class="form-select" asp-items="ViewBag.MesaId"></select>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="MesaId" class="form-label fw-semibold"></label>
+                    <select asp-for="MesaId" class="form-select" asp-items="ViewBag.MesaId">
+                        <option value="">-- Seleccione mesa --</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="SaloneroId" class="form-label fw-semibold"></label>
+                    <select asp-for="SaloneroId" class="form-select" asp-items="ViewBag.SaloneroId">
+                        <option value="">-- Seleccione salonero --</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Fecha" class="form-label fw-semibold"></label>
+                    <input asp-for="Fecha" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="SaloneroId" class="form-label fw-semibold"></label>
-                <select asp-for="SaloneroId" class="form-select" asp-items="ViewBag.SaloneroId"></select>
+            <hr />
+            <h5 class="mb-3">Productos de la orden</h5>
+
+            <div class="row align-items-end g-2 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Producto</label>
+                    <select id="productoSelect" class="form-select">
+                        <option value="">-- Seleccione producto --</option>
+                        @foreach (var producto in productosSelect)
+                        {
+                            <option value="@producto.Value">@producto.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Cantidad</label>
+                    <input id="cantidadInput" type="number" min="1" value="1" class="form-control" />
+                </div>
+
+                <div class="col-md-3 d-grid">
+                    <button type="button" id="btnAgregarProducto" class="btn btn-success">Agregar</button>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Fecha" class="form-label fw-semibold"></label>
-                <input asp-for="Fecha" class="form-control" />
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle" id="tablaProductos">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th style="width: 180px;">Cantidad</th>
+                            <th style="width: 120px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Detalles != null && Model.Detalles.Any())
+                        {
+                            for (int i = 0; i < Model.Detalles.Count; i++)
+                            {
+                                var productoNombre = productosSelect.FirstOrDefault(p => p.Value == Model.Detalles[i].ProductoId.ToString())?.Text ?? "Producto";
+                                <tr>
+                                    <td>
+                                        @productoNombre
+                                        <input type="hidden" name="Detalles[@i].ProductoId" value="@Model.Detalles[i].ProductoId" />
+                                    </td>
+                                    <td>
+                                        <input type="number"
+                                               name="Detalles[@i].Cantidad"
+                                               value="@Model.Detalles[i].Cantidad"
+                                               min="1"
+                                               class="form-control cantidad-editable" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm btn-eliminar">Quitar</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between mt-3">
                 <a asp-action="Index" class="btn btn-secondary">← Volver</a>
-                <button type="submit" class="btn btn-gold">Guardar Cambios</button>
+                <button type="submit" class="btn btn-gold">Guardar cambios</button>
             </div>
-
         </form>
     </div>
 </div>
@@ -44,4 +120,92 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        const productos = @Html.Raw(productosJson);
+        const productoSelect = document.getElementById('productoSelect');
+        const cantidadInput = document.getElementById('cantidadInput');
+        const btnAgregarProducto = document.getElementById('btnAgregarProducto');
+        const tablaBody = document.querySelector('#tablaProductos tbody');
+
+        function reindexarFilas() {
+            const filas = tablaBody.querySelectorAll('tr');
+            filas.forEach((fila, index) => {
+                const productoInput = fila.querySelector('input[name$=".ProductoId"]');
+                const cantidadInputFila = fila.querySelector('.cantidad-editable');
+
+                if (productoInput) {
+                    productoInput.name = `Detalles[${index}].ProductoId`;
+                }
+
+                if (cantidadInputFila) {
+                    cantidadInputFila.name = `Detalles[${index}].Cantidad`;
+                }
+            });
+        }
+
+        function crearFila(productoId, nombreProducto, cantidad) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    ${nombreProducto}
+                    <input type="hidden" name="Detalles[0].ProductoId" value="${productoId}" />
+                </td>
+                <td>
+                    <input type="number"
+                           name="Detalles[0].Cantidad"
+                           value="${cantidad}"
+                           min="1"
+                           class="form-control cantidad-editable" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm btn-eliminar">Quitar</button>
+                </td>`;
+            tablaBody.appendChild(tr);
+            reindexarFilas();
+        }
+
+        btnAgregarProducto.addEventListener('click', function () {
+            const productoId = productoSelect.value;
+            const cantidad = parseInt(cantidadInput.value || '0');
+
+            if (!productoId) {
+                alert('Seleccione un producto.');
+                return;
+            }
+
+            if (!cantidad || cantidad < 1) {
+                alert('La cantidad debe ser mayor a 0.');
+                return;
+            }
+
+            const producto = productos.find(p => p.id === productoId);
+            if (!producto) {
+                alert('Producto inválido.');
+                return;
+            }
+
+            crearFila(productoId, producto.nombre, cantidad);
+            productoSelect.value = '';
+            cantidadInput.value = 1;
+        });
+
+        tablaBody.addEventListener('click', function (e) {
+            if (e.target.classList.contains('btn-eliminar')) {
+                e.target.closest('tr').remove();
+                reindexarFilas();
+            }
+        });
+
+        tablaBody.addEventListener('change', function (e) {
+            if (e.target.classList.contains('cantidad-editable')) {
+                const valor = parseInt(e.target.value || '0');
+                if (!valor || valor < 1) {
+                    e.target.value = 1;
+                }
+            }
+        });
+
+        reindexarFilas();
+    </script>
 }

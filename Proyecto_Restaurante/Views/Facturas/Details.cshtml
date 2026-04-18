@@ -1,26 +1,216 @@
 ﻿@model Proyecto_Restaurante.Models.Factura
+@using System.Linq
 
 @{
-    ViewData["Title"] = "Detalle Factura";
+    ViewData["Title"] = "Detalle de Factura";
+
+    var detalles = Model.Orden?.ProductoOrdens?.ToList() ?? new List<Proyecto_Restaurante.Models.ProductoOrden>();
+    decimal subtotal = Model.Subtotal ?? 0m;
+    decimal impuestos = Model.Impuestos ?? 0m;
+    decimal total = Model.Total ?? 0m;
+    var fechaOrden = Model.Orden?.Fecha;
 }
 
-<div class="card shadow">
-    <div class="card-header bg-info text-white">
-        <h4 class="mb-0">📄 Detalle de Factura</h4>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <a asp-action="Index" class="btn btn-secondary">← Volver</a>
 
-    <div class="card-body">
-
-        <p><strong>Total:</strong> @Model.Total</p>
-        <p><strong>Impuestos:</strong> @Model.Impuestos</p>
-        <p><strong>Método de Pago:</strong> @Model.MetodoPago</p>
-        <p><strong>Número de Factura:</strong> @Model.NumeroFactura</p>
-        <p><strong>Orden:</strong> @Model.Orden?.OrdenId</p>
-
-        <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
-            <a asp-action="Edit" asp-route-id="@Model.FacturaId" class="btn btn-warning">Editar</a>
-        </div>
-
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.FacturaId" class="btn btn-warning">Editar</a>
+        <button type="button" class="btn btn-dark" onclick="window.print()">🖨️ Imprimir</button>
     </div>
 </div>
+
+<div class="card shadow factura-print-area border-0">
+    <div class="card-body p-4">
+
+        <!-- Encabezado -->
+        <div class="row align-items-center border-bottom pb-3 mb-4">
+            <div class="col-md-7">
+                <h2 class="fw-bold mb-1">Restaurante Daly</h2>
+                <div class="text-muted">Factura electrónica / comprobante interno</div>
+                <div class="mt-2">
+                    <div><strong>Dirección:</strong> San José, Costa Rica</div>
+                    <div><strong>Teléfono:</strong> 0000-0000</div>
+                    <div><strong>Email:</strong> restaurante@daly.com</div>
+                </div>
+            </div>
+
+            <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                <div class="border rounded p-3 bg-light">
+                    <h4 class="mb-2">FACTURA</h4>
+                    <div><strong>Número:</strong> @Model.NumeroFactura</div>
+                    <div><strong>ID Factura:</strong> @Model.FacturaId</div>
+                    <div><strong>Fecha:</strong> @(fechaOrden?.ToString("dd/MM/yyyy hh:mm tt") ?? "N/D")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información general -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="border rounded p-3 h-100">
+                    <h5 class="fw-bold mb-3">Información de la orden</h5>
+                    <p class="mb-1"><strong>Orden:</strong> #@Model.OrdenId</p>
+                    <p class="mb-1"><strong>Mesa:</strong> @(Model.Orden?.MesaId?.ToString() ?? "N/D")</p>
+                    <p class="mb-1"><strong>Salonero:</strong> @(Model.Orden?.Salonero?.Nombre ?? "N/D")</p>
+                    <p class="mb-1"><strong>Fecha de la orden:</strong> @(fechaOrden?.ToString("dd/MM/yyyy hh:mm tt") ?? "N/D")</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="border rounded p-3 h-100">
+                    <h5 class="fw-bold mb-3">Información de pago</h5>
+                    <p class="mb-1"><strong>Método de pago:</strong> @(string.IsNullOrWhiteSpace(Model.MetodoPago) ? "N/D" : Model.MetodoPago)</p>
+                    <p class="mb-1"><strong>Número de factura:</strong> @(string.IsNullOrWhiteSpace(Model.NumeroFactura) ? "N/D" : Model.NumeroFactura)</p>
+                    <p class="mb-1"><strong>Impuesto aplicado:</strong> 13%</p>
+                    <p class="mb-1"><strong>Estado:</strong> Emitida</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="mb-4">
+            <h5 class="fw-bold mb-3">Detalle de productos</h5>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Producto</th>
+                            <th style="width: 130px;">Cantidad</th>
+                            <th style="width: 170px;">Precio Unitario</th>
+                            <th style="width: 170px;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (detalles.Any())
+                        {
+                            int contador = 1;
+
+                            foreach (var item in detalles)
+                            {
+                                var cantidad = item.Cantidad ?? 0;
+                                var precio = item.Precio ?? 0m;
+                                var subtotalLinea = cantidad * precio;
+
+                                <tr>
+                                    <td>@contador</td>
+                                    <td>@(item.Producto?.Nombre ?? "Producto")</td>
+                                    <td>@cantidad</td>
+                                    <td>₡ @precio.ToString("N2")</td>
+                                    <td>₡ @subtotalLinea.ToString("N2")</td>
+                                </tr>
+
+                                contador++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No hay productos asociados a esta factura.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="row justify-content-end">
+            <div class="col-md-5">
+                <table class="table table-borderless">
+                    <tr>
+                        <th class="text-end">Subtotal:</th>
+                        <td class="text-end">₡ @subtotal.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <th class="text-end">Impuesto (13%):</th>
+                        <td class="text-end">₡ @impuestos.ToString("N2")</td>
+                    </tr>
+                    <tr class="border-top">
+                        <th class="text-end fs-5">Total:</th>
+                        <td class="text-end fs-5 fw-bold">₡ @total.ToString("N2")</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pie -->
+        <div class="mt-4 pt-3 border-top text-center text-muted">
+            <p class="mb-1">Gracias por su visita a Restaurante Daly.</p>
+            <p class="mb-0">Este documento sirve como comprobante de compra.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .factura-print-area {
+        background: #fff;
+    }
+
+    .factura-print-area h2,
+    .factura-print-area h4,
+    .factura-print-area h5 {
+        color: #212529;
+    }
+
+    .factura-print-area .table th,
+    .factura-print-area .table td {
+        vertical-align: middle;
+    }
+
+    @@media print {
+        body * {
+            visibility: hidden !important;
+        }
+
+        .factura-print-area,
+        .factura-print-area * {
+            visibility: visible !important;
+        }
+
+        .factura-print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        .table-dark,
+        .table-dark th,
+        .table-dark td {
+            background-color: #212529 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card,
+        .card-body {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        @@page {
+            size: auto;
+            margin: 15mm;
+        }
+    }
+</style>

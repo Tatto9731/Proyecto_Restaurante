@@ -49,8 +49,14 @@ namespace Proyecto_Restaurante.Controllers
         // GET: Reservas/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre");
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId");
+            ViewData["Estado"] = new SelectList(new List<string>
+            {
+                "Pendiente",
+                "Confirmada",
+                "Cancelada"
+            });
             return View();
         }
 
@@ -108,8 +114,14 @@ namespace Proyecto_Restaurante.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre", reserva.ClienteId);
                 ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                ViewData["Estado"] = new SelectList(new List<string>
+                {
+                    "Pendiente",
+                    "Confirmada",
+                    "Cancelada"
+                }, reserva.Estado);
                 return View(reserva);
             }
 
@@ -122,8 +134,14 @@ namespace Proyecto_Restaurante.Controllers
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Ocurrió un error al guardar la reserva.");
-                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre", reserva.ClienteId);
                 ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                ViewData["Estado"] = new SelectList(new List<string>
+                {
+                    "Pendiente",
+                    "Confirmada",
+                    "Cancelada"
+                }, reserva.Estado);
                 return View(reserva);
             }
         }
@@ -141,8 +159,14 @@ namespace Proyecto_Restaurante.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre", reserva.ClienteId);
             ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+            ViewData["Estado"] = new SelectList(new List<string>
+            {
+                "Pendiente",
+                "Confirmada",
+                "Cancelada"
+            }, reserva.Estado);
             return View(reserva);
         }
 
@@ -207,8 +231,14 @@ namespace Proyecto_Restaurante.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre", reserva.ClienteId);
                 ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                ViewData["Estado"] = new SelectList(new List<string>
+                {
+                    "Pendiente",
+                    "Confirmada",
+                    "Cancelada"
+                }, reserva.Estado);
                 return View(reserva);
             }
 
@@ -229,8 +259,14 @@ namespace Proyecto_Restaurante.Controllers
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Ocurrió un error al actualizar la reserva.");
-                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", reserva.ClienteId);
+                ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "Nombre", reserva.ClienteId);
                 ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", reserva.MesaId);
+                ViewData["Estado"] = new SelectList(new List<string>
+                {
+                    "Pendiente",
+                    "Confirmada",
+                    "Cancelada"
+                }, reserva.Estado);
                 return View(reserva);
             }
 

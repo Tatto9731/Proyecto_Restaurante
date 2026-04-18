@@ -1,23 +1,26 @@
 ﻿@model Proyecto_Restaurante.Models.Mesa
 
 @{
-    ViewData["Title"] = "Detalle Mesa";
+    ViewData["Title"] = "Detalle de Mesa";
 }
 
-<div class="card shadow">
+<div class="card shadow-sm border-0">
     <div class="card-header bg-info text-white">
-        <h4 class="mb-0">📄 Detalle de Mesa</h4>
+        <h4 class="mb-0">Detalle de Mesa</h4>
     </div>
 
     <div class="card-body">
-
         <p><strong>Número de Mesa:</strong> @Model.NumeroMesa</p>
         <p><strong>Capacidad:</strong> @Model.Capacidad personas</p>
+
+        @if (Model.GetType().GetProperty("Estado") != null)
+        {
+            <p><strong>Estado:</strong> @Model.Estado</p>
+        }
 
         <div class="d-flex justify-content-between">
             <a asp-action="Index" class="btn btn-secondary">← Volver</a>
             <a asp-action="Edit" asp-route-id="@Model.MesaId" class="btn btn-warning">Editar</a>
         </div>
-
     </div>
 </div>

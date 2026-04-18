@@ -1,23 +1,53 @@
 ﻿@model Proyecto_Restaurante.Models.Mesa
 
 @{
-    ViewData["Title"] = "Detalle Mesa";
+    ViewData["Title"] = "Editar Mesa";
 }
 
-<div class="card shadow">
-    <div class="card-header bg-info text-white">
-        <h4 class="mb-0">📄 Detalle de Mesa</h4>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-warning text-dark">
+        <h4 class="mb-0">Editar Mesa</h4>
     </div>
 
     <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="MesaId" />
 
-        <p><strong>Número de Mesa:</strong> @Model.NumeroMesa</p>
-        <p><strong>Capacidad:</strong> @Model.Capacidad personas</p>
+            <div class="mb-3">
+                <label asp-for="NumeroMesa" class="form-label fw-semibold">Número de Mesa</label>
+                <input asp-for="NumeroMesa" class="form-control" />
+                <span asp-validation-for="NumeroMesa" class="text-danger"></span>
+            </div>
 
-        <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">← Volver</a>
-            <a asp-action="Edit" asp-route-id="@Model.MesaId" class="btn btn-warning">Editar</a>
-        </div>
+            <div class="mb-3">
+                <label asp-for="Capacidad" class="form-label fw-semibold">Capacidad</label>
+                <input asp-for="Capacidad" class="form-control" />
+                <span asp-validation-for="Capacidad" class="text-danger"></span>
+            </div>
 
+            @* Solo si ya agregaste la propiedad Estado en Mesa *@
+            @if (Model.GetType().GetProperty("Estado") != null)
+            {
+                <div class="mb-3">
+                    <label asp-for="Estado" class="form-label fw-semibold"></label>
+                    <select asp-for="Estado" class="form-select">
+                        <option value="Disponible">Disponible</option>
+                        <option value="Ocupada">Ocupada</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">← Volver</a>
+                <button type="submit" class="btn btn-warning">Guardar cambios</button>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

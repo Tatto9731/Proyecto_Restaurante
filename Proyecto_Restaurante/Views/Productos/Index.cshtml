@@ -24,7 +24,7 @@
             <tr>
                 <td class="fw-semibold">@item.Nombre</td>
                 <td>₡ @item.Precio</td>
-                <td>📂 @item.Categoria?.CategoriaId</td>
+                <td>📂 @item.Categoria?.Nombre</td>
                 <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@item.ProductoId" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.ProductoId" class="btn btn-sm btn-info text-white">Ver detalles</a>

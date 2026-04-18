@@ -88,6 +88,9 @@ public partial class RestauranteDalyContext : DbContext
             entity.ToTable("Mesa");
 
             entity.Property(e => e.MesaId).HasColumnName("MesaID");
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .HasDefaultValue("Disponible");
         });
 
         modelBuilder.Entity<Orden>(entity =>

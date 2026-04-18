@@ -24,7 +24,7 @@
             <tr>
                 <td>@item.Fecha</td>
                 <td>🪑 @item.Mesa?.MesaId</td>
-                <td>👨‍🍳 @item.Salonero?.SaloneroId</td>
+                <td>👨‍🍳 @item.Salonero?.Nombre</td>
                 <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@item.OrdenId" class="btn btn-sm btn-warning">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.OrdenId" class="btn btn-sm btn-info text-white">Ver detalles</a>

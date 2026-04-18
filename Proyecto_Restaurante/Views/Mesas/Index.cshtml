@@ -4,29 +4,41 @@
     ViewData["Title"] = "Mesas";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">🪑 Mesas</h2>
-    <a asp-action="Create" class="btn btn-gold">+ Nueva Mesa</a>
-</div>
+<h2>Mesas</h2>
 
-<table class="table table-hover align-middle">
-    <thead class="table-dark">
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva Mesa</a>
+</p>
+
+<table class="table">
+    <thead>
         <tr>
             <th>Número</th>
             <th>Capacidad</th>
-            <th class="text-end">Acciones</th>
+            <th>Estado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td class="fw-semibold">@item.NumeroMesa</td>
+                <td>@item.NumeroMesa</td>
                 <td>@item.Capacidad personas</td>
-                <td class="text-end">
-                    <a asp-action="Edit" asp-route-id="@item.MesaId" class="btn btn-sm btn-warning">Editar</a>
-                    <a asp-action="Details" asp-route-id="@item.MesaId" class="btn btn-sm btn-info text-white">Ver detalles</a>
-                    <a asp-action="Delete" asp-route-id="@item.MesaId" class="btn btn-sm btn-danger">Eliminar</a>
+                <td>
+                    @if (item.Estado == "Ocupada")
+                    {
+                        <span class="badge bg-danger">Ocupada</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Disponible</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MesaId">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.MesaId">Ver detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MesaId">Eliminar</a>
                 </td>
             </tr>
         }

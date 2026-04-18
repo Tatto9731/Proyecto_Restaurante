@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_Restaurante.Data;
@@ -22,7 +18,10 @@ namespace Proyecto_Restaurante.Controllers
         // GET: Ordenes
         public async Task<IActionResult> Index()
         {
-            var restauranteDalyContext = _context.Ordens.Include(o => o.Mesa).Include(o => o.Salonero);
+            var restauranteDalyContext = _context.Ordens
+                .Include(o => o.Mesa)
+                .Include(o => o.Salonero);
+
             return View(await restauranteDalyContext.ToListAsync());
         }
 
@@ -38,6 +37,7 @@ namespace Proyecto_Restaurante.Controllers
                 .Include(o => o.Mesa)
                 .Include(o => o.Salonero)
                 .FirstOrDefaultAsync(m => m.OrdenId == id);
+
             if (orden == null)
             {
                 return NotFound();
@@ -49,26 +49,62 @@ namespace Proyecto_Restaurante.Controllers
         // GET: Ordenes/Create
         public IActionResult Create()
         {
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId");
-            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId");
+            var mesasDisponibles = _context.Mesas
+                .Where(m => !_context.Ordens.Any(o =>
+                    o.MesaId == m.MesaId &&
+                    !_context.Facturas.Any(f => f.OrdenId == o.OrdenId)))
+                .ToList();
+
+            ViewData["MesaId"] = new SelectList(mesasDisponibles, "MesaId", "NumeroMesa");
+            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "Nombre");
+
             return View();
         }
 
         // POST: Ordenes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrdenId,MesaId,SaloneroId,Fecha")] Orden orden)
         {
-            
-                _context.Add(orden);
+            bool mesaTieneOrdenActiva = await _context.Ordens
+                .AnyAsync(o => o.MesaId == orden.MesaId &&
+                               !_context.Facturas.Any(f => f.OrdenId == o.OrdenId));
+
+            if (mesaTieneOrdenActiva)
+            {
+                ModelState.AddModelError("MesaId", "La mesa seleccionada ya tiene una orden activa.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var mesasDisponibles = _context.Mesas
+                    .Where(m => !_context.Ordens.Any(o =>
+                        o.MesaId == m.MesaId &&
+                        !_context.Facturas.Any(f => f.OrdenId == o.OrdenId))
+                        || m.MesaId == orden.MesaId)
+                    .ToList();
+
+                ViewData["MesaId"] = new SelectList(mesasDisponibles, "MesaId", "NumeroMesa", orden.MesaId);
+                ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "Nombre", orden.SaloneroId);
+                return View(orden);
+            }
+
+            if (orden.Fecha == null)
+            {
+                orden.Fecha = DateTime.Now;
+            }
+
+            _context.Add(orden);
+            await _context.SaveChangesAsync();
+
+            var mesa = await _context.Mesas.FindAsync(orden.MesaId);
+            if (mesa != null)
+            {
+                mesa.Estado = "Ocupada";
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", orden.MesaId);
-            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId", orden.SaloneroId);
-            return View(orden);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Ordenes/Edit/5
@@ -84,14 +120,13 @@ namespace Proyecto_Restaurante.Controllers
             {
                 return NotFound();
             }
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", orden.MesaId);
-            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId", orden.SaloneroId);
+
+            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "NumeroMesa", orden.MesaId);
+            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "Nombre", orden.SaloneroId);
             return View(orden);
         }
 
         // POST: Ordenes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrdenId,MesaId,SaloneroId,Fecha")] Orden orden)
@@ -101,28 +136,29 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-           
-                try
+            if (!ModelState.IsValid)
+            {
+                ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "NumeroMesa", orden.MesaId);
+                ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "Nombre", orden.SaloneroId);
+                return View(orden);
+            }
+
+            try
+            {
+                _context.Update(orden);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrdenExists(orden.OrdenId))
                 {
-                    _context.Update(orden);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrdenExists(orden.OrdenId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            
-            ViewData["MesaId"] = new SelectList(_context.Mesas, "MesaId", "MesaId", orden.MesaId);
-            ViewData["SaloneroId"] = new SelectList(_context.Saloneros, "SaloneroId", "SaloneroId", orden.SaloneroId);
-            return View(orden);
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Ordenes/Delete/5
@@ -137,6 +173,7 @@ namespace Proyecto_Restaurante.Controllers
                 .Include(o => o.Mesa)
                 .Include(o => o.Salonero)
                 .FirstOrDefaultAsync(m => m.OrdenId == id);
+
             if (orden == null)
             {
                 return NotFound();
@@ -151,12 +188,50 @@ namespace Proyecto_Restaurante.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var orden = await _context.Ordens.FindAsync(id);
-            if (orden != null)
+
+            if (orden == null)
             {
-                _context.Ordens.Remove(orden);
+                return RedirectToAction(nameof(Index));
             }
 
+            var mesaId = orden.MesaId;
+
+            bool tieneFactura = await _context.Facturas
+                .AnyAsync(f => f.OrdenId == id);
+
+            if (tieneFactura)
+            {
+                TempData["Error"] = "No se puede eliminar la orden porque ya tiene una factura asociada.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var productosOrden = await _context.ProductoOrdens
+                .Where(p => p.OrdenId == id)
+                .ToListAsync();
+
+            if (productosOrden.Any())
+            {
+                _context.ProductoOrdens.RemoveRange(productosOrden);
+            }
+
+            _context.Ordens.Remove(orden);
             await _context.SaveChangesAsync();
+
+            if (mesaId.HasValue)
+            {
+                bool quedanOrdenesActivas = await _context.Ordens
+                    .AnyAsync(o => o.MesaId == mesaId &&
+                                   !_context.Facturas.Any(f => f.OrdenId == o.OrdenId));
+
+                var mesa = await _context.Mesas.FindAsync(mesaId.Value);
+                if (mesa != null)
+                {
+                    mesa.Estado = quedanOrdenesActivas ? "Ocupada" : "Disponible";
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            TempData["Success"] = "La orden fue eliminada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 

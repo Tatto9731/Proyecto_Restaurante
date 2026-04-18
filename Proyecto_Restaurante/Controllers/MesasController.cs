@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_Restaurante.Data;
 using Proyecto_Restaurante.Models;
@@ -35,6 +30,7 @@ namespace Proyecto_Restaurante.Controllers
 
             var mesa = await _context.Mesas
                 .FirstOrDefaultAsync(m => m.MesaId == id);
+
             if (mesa == null)
             {
                 return NotFound();
@@ -50,17 +46,18 @@ namespace Proyecto_Restaurante.Controllers
         }
 
         // POST: Mesas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MesaId,NumeroMesa,Capacidad")] Mesa mesa)
         {
-          
+            if (ModelState.IsValid)
+            {
+                mesa.Estado = "Disponible";
                 _context.Add(mesa);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
+            }
+
             return View(mesa);
         }
 
@@ -77,12 +74,11 @@ namespace Proyecto_Restaurante.Controllers
             {
                 return NotFound();
             }
+
             return View(mesa);
         }
 
         // POST: Mesas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MesaId,NumeroMesa,Capacidad")] Mesa mesa)
@@ -92,26 +88,35 @@ namespace Proyecto_Restaurante.Controllers
                 return NotFound();
             }
 
-            
-                try
+            if (!ModelState.IsValid)
+            {
+                return View(mesa);
+            }
+
+            var mesaDb = await _context.Mesas.FindAsync(id);
+            if (mesaDb == null)
+            {
+                return NotFound();
+            }
+
+            mesaDb.NumeroMesa = mesa.NumeroMesa;
+            mesaDb.Capacidad = mesa.Capacidad;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MesaExists(mesa.MesaId))
                 {
-                    _context.Update(mesa);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MesaExists(mesa.MesaId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            
-            return View(mesa);
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Mesas/Delete/5
@@ -124,6 +129,7 @@ namespace Proyecto_Restaurante.Controllers
 
             var mesa = await _context.Mesas
                 .FirstOrDefaultAsync(m => m.MesaId == id);
+
             if (mesa == null)
             {
                 return NotFound();

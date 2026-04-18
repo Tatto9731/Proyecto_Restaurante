@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_Restaurante.Data;
 
@@ -11,9 +12,11 @@ using Proyecto_Restaurante.Data;
 namespace Proyecto_Restaurante.Migrations
 {
     [DbContext(typeof(RestauranteDalyContext))]
-    partial class RestauranteDalyContextModelSnapshot : ModelSnapshot
+    [Migration("20260418004229_AgregarEstadoMesa")]
+    partial class AgregarEstadoMesa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
